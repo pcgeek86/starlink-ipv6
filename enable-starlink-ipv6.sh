@@ -41,7 +41,8 @@ $cfg set firewall ipv6-name WAN_LOCAL_6 rule 40 protocol all
 $cfg set firewall ipv6-name WAN_LOCAL_6 rule 40 state invalid enable
 $cfg set firewall ipv6-name WAN_LOCAL_6 rule 40 description "Drop Invalid state"
 $cfg set interfaces ethernet eth0 firewall local ipv6-name WAN_LOCAL_6
-#Configure DHCP-PD
+
+#Configure DHCP-PD (Prefix Delegation)
 $cfg set interfaces ethernet eth0 dhcpv6-pd prefix-only
 $cfg set interfaces ethernet eth0 dhcpv6-pd pd 0 prefix-length 56
 $cfg set interfaces ethernet eth0 dhcpv6-pd pd 0 interface switch0 prefix-id :1
@@ -49,6 +50,10 @@ $cfg set interfaces ethernet eth0 dhcpv6-pd pd 0 interface switch0 host-address 
 $cfg set interfaces ethernet eth0 dhcpv6-pd pd 0 interface switch0 service slaac
 $cfg set service dns forwarding name-server 2606:4700:4700::1111
 $cfg set service dns forwarding name-server 2606:4700:4700::1001
+
+# Enable script to periodically refresh IPv6 prefix
+$cfg set system task-scheduler task send-starlink-rs executable path /config/scripts/ipv6raconfig.sh
+$cfg set system task-scheduler task send-starlink-rs interval 5m
 
 echo Committing Changes, please run save and exit then reboot
 $cfg commit
